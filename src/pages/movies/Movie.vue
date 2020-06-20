@@ -8,7 +8,7 @@
       />
     </div>
     <div class="flex flex-left q-pa-md row q-gutter-md">
-      <q-card class="my-card" style="max-width: 280px">
+      <q-card class="movie-card">
         <q-img contain :src="movie.poster_path" />
 
         <q-card-section>
@@ -35,24 +35,62 @@
         </q-card-section>
       </q-card>
 
-      <q-card class="my-card" style="max-width: 450px">
+      <q-card class="info-card" style="max-width: 450px">
         <q-card-section style="opacity: 0.8">
           <div class="text-h6">
             <q-chip square label="IMDb" color="warning" />
             <q-chip
-              ><q-avatar color="warning" icon="star_border" />
+              ><q-avatar color="warning" icon="star_outline" />
               <q-spinner-dots
-                v-if="!imdb_rating"
+                v-if="!imdbRating"
                 color="primary"
                 size="2em"
-              /><span v-else>{{ imdb_rating }}</span></q-chip
+              /><span v-else>{{ imdbRating }}/10</span></q-chip
             ><q-chip
               ><q-avatar color="warning" icon="person_outline" />
+              <q-spinner-dots v-if="!imdbVotes" color="primary" size="2em" />{{
+                imdbVotes
+              }}</q-chip
+            >
+          </div>
+          <div class="text-h6">
+            <q-chip
+              square
+              label="Rotten Tomatoes"
+              text-color="white"
+              style="background-color: #fa320a"
+            />
+            <q-chip
+              ><q-avatar
+                style="background-color: #fa320a"
+                text-color="white"
+                icon="star_outline"
+              />
               <q-spinner-dots
-                v-if="!imdb_rating_count"
+                v-if="!rottenTomatoesRating"
                 color="primary"
                 size="2em"
-              />{{ imdb_rating_count | separateThous }}</q-chip
+              />{{ rottenTomatoesRating }}</q-chip
+            >
+          </div>
+          <div class="text-h6">
+            <q-chip
+              square
+              label="Metacritic"
+              text-color="white"
+              style="background-color: #02dede"
+            />
+            <q-chip
+              ><q-avatar
+                style="background-color: #02dede"
+                text-color="white"
+                icon="star_outline"
+              />
+              <q-spinner-dots
+                v-if="!metacriticRating"
+                color="primary"
+                size="2em"
+              />{{ metacriticRating }}</q-chip
             >
           </div>
           <!-- <div class="text-subtitle2">by John Doe</div> -->
@@ -60,8 +98,8 @@
 
         <q-tabs v-model="tab" class="text-primary">
           <q-tab label="Overview" name="overview" />
-          <q-tab label="Similar" name="similar" />
-          <q-tab label="Crew" name="crew" />
+          <q-tab label="Cast & Crew" name="castAndCrew" />
+          <q-tab label="More" name="more" />
         </q-tabs>
 
         <q-separator />
@@ -92,22 +130,57 @@
             </div>
           </q-tab-panel>
 
-          <q-tab-panel name="similar">
-            <!-- <div class="q-pa-md">
-              <q-card
-                v-for="(similarMovie, index) in similarMovies"
-                :key="index"
-                clickable
-                style="max-width: 150px"
-              >
-                <q-img contain :src="similarMovie.poster_path" />
-              </q-card>
-            </div> -->
+          <q-tab-panel name="castAndCrew">
+            <div class="q-my-md">
+              <q-chip
+                square
+                outline
+                label="Actors"
+                color="dark"
+                text-color="white"
+              />
+              <q-chip
+                square
+                v-for="(actor, index) in actors"
+                :key="index + 'a'"
+                :label="actor"
+              />
+            </div>
+            <q-separator />
+            <div class="q-my-md">
+              <q-chip
+                square
+                outline
+                label="Writer/s"
+                color="dark"
+                text-color="white"
+              />
+              <q-chip
+                square
+                v-for="(writer, index) in writers"
+                :key="index + 'w'"
+                :label="writer"
+              />
+            </div>
+            <q-separator />
+            <div class="q-my-md">
+              <q-chip
+                square
+                outline
+                label="Director/s"
+                color="dark"
+                text-color="white"
+              />
+              <q-chip
+                square
+                v-for="(director, index) in directors"
+                :key="index + 'd'"
+                :label="director"
+              />
+            </div>
           </q-tab-panel>
-          <q-tab-panel name="crew">
-            With so much content to display at once, and often so little screen
-            real-estate, Cards have fast become the design pattern of choice for
-            many companies, including the likes of Google and Twitter.
+          <q-tab-panel name="more">
+            {{ movieAwards }}
           </q-tab-panel>
         </q-tab-panels>
       </q-card>
@@ -122,22 +195,34 @@ export default {
       tab: "overview"
     };
   },
-  filters: {
-    separateThous: function(value) {
-      if (!value) return "";
-      return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    }
-  },
   computed: {
     movie() {
       return this.$store.state.movies.movie;
       console.log(this.$store.state.movies.movie);
     },
-    imdb_rating() {
-      return this.$store.state.movies.imdb_rating;
+    actors() {
+      return this.$store.state.movies.movieActors;
     },
-    imdb_rating_count() {
-      return this.$store.state.movies.imdb_rating_count;
+    writers() {
+      return this.$store.state.movies.movieWriters;
+    },
+    directors() {
+      return this.$store.state.movies.movieDirectors;
+    },
+    imdbRating() {
+      return this.$store.state.movies.imdbRating;
+    },
+    imdbVotes() {
+      return this.$store.state.movies.imdbVotes;
+    },
+    rottenTomatoesRating() {
+      return this.$store.state.movies.rottenTomatoesRating;
+    },
+    metacriticRating() {
+      return this.$store.state.movies.metacriticRating;
+    },
+    movieAwards() {
+      return this.$store.state.movies.movieAwards;
     },
     similarMovies() {
       return this.$store.state.movies.similarMovies;
@@ -153,6 +238,8 @@ export default {
 </script>
 
 <style lang="sass" scoped>
+.movie-card
+  max-width: 280px
 .back-img-mask
   position: fixed;
   background-color: black;

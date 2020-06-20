@@ -8,6 +8,14 @@ export function setMovies(state, payload) {
   state.movies = payload;
 }
 
+export function setCurrentPage(state, payload) {
+  state.currentPage = payload;
+}
+
+export function setTotalPages(state, payload) {
+  state.totalPages = payload;
+}
+
 export function setMovie(state, payload) {
   state.movie = payload;
   state.movie.backdrop_path =
@@ -18,21 +26,64 @@ export function setMovie(state, payload) {
 
 export function resetMovie(state) {
   state.movie = {};
-  state.imdb_rating = null;
-  state.imdb_rating_count = null;
+  state.imdbRating = null;
+  state.imdbVotes = null;
+  state.rottenTomatoesRating = null;
+  state.metacriticRating = null;
+  state.movieActors = [];
+  state.movieWriters = [];
+  state.movieDirectors = [];
+  state.similarMovies = {};
+  state.movieAwards = "";
 }
 
-export function setMovieImdbMeta(state, payload) {
-  state.imdb_rating = payload.rating;
-  state.imdb_rating_count = payload.ratingCount;
+export function setRatings(state, { imdbRating, imdbVotes, ratings }) {
+  state.imdbRating = imdbRating ? imdbRating : "N/A";
+  state.imdbVotes = imdbVotes ? imdbVotes : "N/A";
+  let rt = false;
+  let mc = false;
+  if (ratings) {
+    ratings.forEach(element => {
+      if (element.Source.includes("Tomatoes")) {
+        state.rottenTomatoesRating = element.Value;
+        rt = true;
+      }
+      if (element.Source.includes("Metacritic")) {
+        state.metacriticRating = element.Value;
+        mc = true;
+      }
+    });
+  }
+  if (rt === false) {
+    state.rottenTomatoesRating = "N/A";
+  }
+  if (mc === false) {
+    state.metacriticRating = "N/A";
+  }
 }
 
-export function setCurrentPage(state, payload) {
-  state.currentPage = payload;
+export function setCastAndCrew(state, { actors, writers, directors }) {
+  if (actors) {
+    state.movieActors = actors.split(", ");
+  }
+  if (writers) {
+    if (writers.includes(",")) {
+      state.movieWriters = writers.split(", ");
+    } else {
+      state.movieWriters.push(writers);
+    }
+  }
+  if (directors) {
+    if (directors.includes(",")) {
+      state.movieDirectors = directors.split(", ");
+    } else {
+      state.movieDirectors.push(directors);
+    }
+  }
 }
 
-export function setTotalPages(state, payload) {
-  state.totalPages = payload;
+export function setAwards(state, { awards }) {
+  state.movieAwards = awards ? awards : "Not sure if any!";
 }
 
 export function setGenres(state, payload) {
@@ -52,15 +103,26 @@ export function resetMoviesTab(state, payload) {
   state.moviesTab = "";
 }
 
-export function setSimilarMovies(state, payload) {
-  state.similarMovies = payload;
+// export function setSimilarMovies(state, payload) {
+//   state.similarMovies = payload;
+// }
+
+// export function setSimilarMoviesCurrentPage(state, payload) {
+//   state.setSimilarMoviesCurrentPage = payload;
+// }
+
+// export function setSimilarMoviesTotalPages(state, payload) {
+//   state.setSimilarMoviesTotalPages = payload;
+// }
+
+export function setSearchType(state, payload) {
+  state.searchType = payload;
 }
 
-export function setSimilarMoviesCurrentPage(state, payload) {
-  state.setSimilarMoviesCurrentPage = payload;
-}
-export function setSimilarMoviesTotalPages(state, payload) {
-  state.setSimilarMoviesTotalPages = payload;
+export function setSearchResults(state, payload) {
+  state.searchResultsCurrentPage = payload.page;
+  state.searchResultsTotalPages = payload.total_pages;
+  state.searchResults = payload.results;
 }
 
 // export function failedToRetrieveImdbMeta(state) {

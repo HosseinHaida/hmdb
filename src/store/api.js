@@ -3,6 +3,8 @@
 
 export default {
   key: "e71ba44dbd36df1e694d29fac0541fa2",
+  omdbBaseUrl: "http://www.omdbapi.com/",
+  omdbKey: "1365db7",
   imdbBaseUrl: "https://imdb8.p.rapidapi.com",
   baseUrl: "https://api.themoviedb.org/3",
   moviesBaseUrl: "/movie",

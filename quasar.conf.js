@@ -122,7 +122,9 @@ module.exports = function(/* ctx */) {
         "QTabPanels",
         "QTabPanel",
         "QSpinnerDots",
-        "QParallax"
+        "QParallax",
+        "QInput",
+        "QBtnToggle"
       ],
 
       directives: ["Ripple"],

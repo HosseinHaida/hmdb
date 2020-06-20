@@ -6,10 +6,20 @@ export default function() {
     totalPages: 0,
     genres: {},
     movie: {},
-    imdb_rating: null,
-    imdb_rating_count: null,
-    similarMovies: {},
-    similarMoviesCurrentPage: 1,
-    similarMovieSTotalPages: 0
+    imdbRating: null,
+    imdbVotes: null,
+    rottenTomatoesRating: null,
+    metacriticRating: null,
+    movieActors: [],
+    movieWriters: [],
+    movieDirectors: [],
+    movieAwards: "",
+    searchType: "movie",
+    searchResults: {},
+    searchResultsCurrentPage: 1,
+    searchResultsTotalPages: 0
+    // similarMovies: {},
+    // similarMoviesCurrentPage: 1,
+    // similarMovieSTotalPages: 0
   };
 }

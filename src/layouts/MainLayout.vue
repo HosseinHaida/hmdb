@@ -19,7 +19,7 @@
           flat
           square
           icon="menu"
-          @click="right = !right"
+          @click="drawerCollapseStatus = !drawerCollapseStatus"
         />
       </q-toolbar>
 
@@ -31,46 +31,128 @@
 
     <q-drawer
       :width="400"
-      v-model="right"
+      v-model="drawerCollapseStatus"
       side="right"
       elevated
       :no-swipe-close="false"
     >
       <!-- drawer content -->
       <div class="q-my-sm q-mx-md">
-        <q-input bottom-slots v-model="searchText" label="Search">
+        <q-input
+          debounce="500"
+          bottom-slots
+          v-model="searchText"
+          label="Search"
+          @input="doTheSearch"
+        >
           <template v-slot:prepend>
             <q-icon name="search" />
           </template>
           <template v-slot:append>
             <q-icon
               name="close"
-              @click="searchText = ''"
+              @click="clearTextSearch"
               class="cursor-pointer"
             />
           </template>
-          <template v-slot:after>
+          <!-- <template v-slot:after>
             <q-btn round dense flat icon="send" @click="doTheSearch()" />
-          </template>
+          </template> -->
         </q-input>
         <div class="q-ma-sm text-center">
           <q-btn-toggle
             v-model="searchType"
             toggle-color="primary"
             :options="[
-              { label: 'Movies', value: 'movie' },
-              { label: 'People', value: 'person' },
-              { label: 'Multi', value: 'multi' }
+              { label: 'Titles', value: 'movie' },
+              { label: 'People', value: 'person' }
             ]"
           />
         </div>
       </div>
       <div class="q-mx-sm q-my-lg">
-        <q-chip
-          v-for="(result, index) in searchResults"
-          :key="index + 'res'"
-          :label="result.title"
-        />
+        <q-list padding>
+          <q-item
+            clickable
+            v-for="(result, index) in searchResults"
+            :key="index + 'i'"
+            :to="
+              result.title ? { name: 'movie', params: { id: result.id } } : ''
+            "
+          >
+            <q-item-section top avatar>
+              <q-avatar size="65px" rounded>
+                <q-icon
+                  v-if="
+                    ((result.title || (result.name && result.overview)) &&
+                      !result.poster_path) ||
+                      (result.known_for && !result.profile_path)
+                  "
+                  style="color: #cacaca"
+                  name="blur_on"
+                  size="60px"
+                />
+                <q-img
+                  native-context-menu
+                  :src="
+                    result.profile_path
+                      ? result.profile_path
+                      : result.poster_path
+                  "
+                />
+              </q-avatar>
+            </q-item-section>
+
+            <q-item-section>
+              <q-item-label>{{
+                result.title ? result.title : result.name
+              }}</q-item-label>
+              <q-item-label caption
+                ><span v-if="result.title"
+                  ><q-chip
+                    v-for="(genreId, index) in result.genre_ids.slice(0, 4)"
+                    :key="index + 'g'"
+                    square
+                    :label="genres[genreId]"
+                    dense
+                    size="13px"
+                /></span>
+                <span v-if="result.known_for"
+                  ><q-chip
+                    v-for="(item, index) in result.known_for"
+                    :key="index + 'kf'"
+                    :label="item.title ? item.title : item.name"
+                    square
+                    size="13px"
+                    dense/></span
+              ></q-item-label>
+            </q-item-section>
+
+            <q-item-section side top>
+              <q-item-label caption
+                ><q-chip
+                  size="13px"
+                  square
+                  dense
+                  color="warning"
+                  :label="
+                    result.release_year
+                      ? result.release_year
+                      : result.known_for_department
+                  "
+              /></q-item-label>
+              <q-item-label v-if="result.title" caption>
+                <q-chip
+                  square
+                  outline
+                  size="13px"
+                  dense
+                  :label="result.original_language"
+                />
+              </q-item-label>
+            </q-item-section>
+          </q-item>
+        </q-list>
       </div>
     </q-drawer>
 
@@ -84,14 +166,31 @@
 export default {
   data() {
     return {
-      right: false,
-      tab: "top_rated",
-      searchText: ""
+      tab: "top_rated"
     };
   },
   computed: {
+    drawerCollapseStatus: {
+      get: function() {
+        return this.$store.state.movies.drawerCollapseStatus;
+      },
+      set: function(val) {
+        this.$store.commit("movies/setDrawerStatus", val);
+      }
+    },
+    searchText: {
+      get: function() {
+        return this.$store.state.movies.searchText;
+      },
+      set: function(val) {
+        this.$store.commit("movies/setSearchText", val);
+      }
+    },
     moviesTab() {
       return this.$store.state.movies.moviesTab;
+    },
+    genres() {
+      return this.$store.state.movies.genres;
     },
     searchType: {
       get: function() {
@@ -106,8 +205,16 @@ export default {
     }
   },
   methods: {
+    clearTextSearch() {
+      this.searchText = "";
+      this.$store.commit("movies/setSearchResults", {});
+    },
     doTheSearch() {
-      this.$store.dispatch("movies/searchApi", this.searchText);
+      if (!this.searchText) {
+        this.$store.commit("movies/setSearchResults", {});
+      } else {
+        this.$store.dispatch("movies/searchApi");
+      }
     }
   },
   watch: {
@@ -117,6 +224,9 @@ export default {
         window.scrollTo(0, 0);
       });
     }
+  },
+  mounted() {
+    this.$store.dispatch("movies/fetchGenres");
   }
 };
 </script>

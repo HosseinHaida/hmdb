@@ -140,10 +140,12 @@
                 text-color="white"
               />
               <q-chip
+                clickable
                 square
                 v-for="(actor, index) in actors"
                 :key="index + 'a'"
                 :label="actor"
+                @click="search(actor)"
               />
             </div>
             <q-separator />
@@ -157,9 +159,11 @@
               />
               <q-chip
                 square
+                clickable
                 v-for="(writer, index) in writers"
                 :key="index + 'w'"
                 :label="writer"
+                @click="search(writer)"
               />
             </div>
             <q-separator />
@@ -173,9 +177,11 @@
               />
               <q-chip
                 square
+                clickable
                 v-for="(director, index) in directors"
                 :key="index + 'd'"
                 :label="director"
+                @click="search(director)"
               />
             </div>
           </q-tab-panel>
@@ -190,15 +196,25 @@
 
 <script>
 export default {
+  name: "Movie",
   data() {
     return {
       tab: "overview"
     };
   },
+  watch: {
+    "$route.params": {
+      handler(newValue) {
+        const { id } = newValue;
+
+        this.$store.dispatch("movies/fetchMovieDetails", id);
+      },
+      immediate: true
+    }
+  },
   computed: {
     movie() {
       return this.$store.state.movies.movie;
-      console.log(this.$store.state.movies.movie);
     },
     actors() {
       return this.$store.state.movies.movieActors;
@@ -226,6 +242,14 @@ export default {
     },
     similarMovies() {
       return this.$store.state.movies.similarMovies;
+    }
+  },
+  methods: {
+    search(person) {
+      this.$store.commit("movies/setDrawerStatus", true);
+      this.$store.commit("movies/setSearchText", person);
+      this.$store.commit("movies/setSearchType", "person");
+      this.$store.dispatch("movies/searchApi");
     }
   },
   mounted() {

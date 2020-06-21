@@ -97,7 +97,6 @@ export default {
     } else {
       this.$store.dispatch("movies/fetchMovies", 1);
     }
-    this.$store.dispatch("movies/fetchGenres");
   }
 };
 </script>

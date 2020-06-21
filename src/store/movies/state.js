@@ -1,5 +1,6 @@
 export default function() {
   return {
+    drawerCollapseStatus: false,
     moviesTab: "",
     movies: {},
     currentPage: 0,
@@ -15,6 +16,7 @@ export default function() {
     movieDirectors: [],
     movieAwards: "",
     searchType: "movie",
+    searchText: "",
     searchResults: {},
     searchResultsCurrentPage: 1,
     searchResultsTotalPages: 0

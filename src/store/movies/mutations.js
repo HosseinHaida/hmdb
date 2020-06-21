@@ -115,14 +115,28 @@ export function resetMoviesTab(state, payload) {
 //   state.setSimilarMoviesTotalPages = payload;
 // }
 
+export function setSearchText(state, payload) {
+  state.searchText = payload.replace(/ *\([^)]*\) */g, "");
+}
+
 export function setSearchType(state, payload) {
   state.searchType = payload;
 }
 
 export function setSearchResults(state, payload) {
-  state.searchResultsCurrentPage = payload.page;
-  state.searchResultsTotalPages = payload.total_pages;
-  state.searchResults = payload.results;
+  state.searchResults = payload;
+}
+
+export function setSearchResultsCurrentPage(state, payload) {
+  state.searchResultsCurrentPage = payload;
+}
+
+export function setSearchResultsTotalPages(state, payload) {
+  state.searchResultsTotalPages = payload;
+}
+
+export function setDrawerStatus(state, payload) {
+  state.drawerCollapseStatus = payload;
 }
 
 // export function failedToRetrieveImdbMeta(state) {

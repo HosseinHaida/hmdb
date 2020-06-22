@@ -16,6 +16,8 @@ export default function() {
     movieDirectors: [],
     movieAwards: "",
     searchType: "movie",
+    searchResultsFetching: false,
+    noSearchResults: false,
     searchText: "",
     searchResults: {},
     searchResultsCurrentPage: 1,

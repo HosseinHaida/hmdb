@@ -30,7 +30,7 @@
     </q-header>
 
     <q-drawer
-      :width="400"
+      :width="drawerWidth"
       v-model="drawerCollapseStatus"
       side="right"
       elevated
@@ -39,7 +39,7 @@
       <!-- drawer content -->
       <div class="q-my-sm q-mx-md">
         <q-input
-          debounce="500"
+          debounce="300"
           bottom-slots
           v-model="searchText"
           label="Search"
@@ -55,9 +55,10 @@
               class="cursor-pointer"
             />
           </template>
-          <!-- <template v-slot:after>
-            <q-btn round dense flat icon="send" @click="doTheSearch()" />
-          </template> -->
+          <template v-slot:after>
+            <!-- <q-btn round dense flat icon="send" @click="doTheSearch()" /> -->
+            <q-spinner-ios v-if="searchResultsFetching" color="primary" />
+          </template>
         </q-input>
         <div class="q-ma-sm text-center">
           <q-btn-toggle
@@ -71,9 +72,15 @@
         </div>
       </div>
       <div class="q-mx-sm q-my-lg">
+        <div class="note note--warning" v-if="noSearchResults">
+          <!-- <p class="text-bold">!</p> -->
+          <p style="color: #684e06">
+            No Search Results!
+          </p>
+        </div>
         <q-list padding>
           <q-item
-            clickable
+            :clickable="result.title ? true : false"
             v-for="(result, index) in searchResults"
             :key="index + 'i'"
             :to="
@@ -119,6 +126,8 @@
                 /></span>
                 <span v-if="result.known_for"
                   ><q-chip
+                    :clickable="item.title ? true : false"
+                    @click="search(item.title)"
                     v-for="(item, index) in result.known_for"
                     :key="index + 'kf'"
                     :label="item.title ? item.title : item.name"
@@ -166,7 +175,8 @@
 export default {
   data() {
     return {
-      tab: "top_rated"
+      tab: "top_rated",
+      drawerWidth: window.innerWidth < 500 ? 320 : 420
     };
   },
   computed: {
@@ -202,6 +212,12 @@ export default {
     },
     searchResults() {
       return this.$store.state.movies.searchResults;
+    },
+    searchResultsFetching() {
+      return this.$store.state.movies.searchResultsFetching;
+    },
+    noSearchResults() {
+      return this.$store.state.movies.noSearchResults;
     }
   },
   methods: {
@@ -215,6 +231,16 @@ export default {
       } else {
         this.$store.dispatch("movies/searchApi");
       }
+    },
+    windowResizeHandler(e) {
+      this.drawerWidth = window.innerWidth < 500 ? 320 : 420;
+      console.log(this.drawerWidth);
+    },
+    search(movie) {
+      this.$store.commit("movies/setDrawerStatus", true);
+      this.$store.commit("movies/setSearchText", movie);
+      this.$store.commit("movies/setSearchType", "movie");
+      this.$store.dispatch("movies/searchApi");
     }
   },
   watch: {
@@ -227,6 +253,11 @@ export default {
   },
   mounted() {
     this.$store.dispatch("movies/fetchGenres");
+  },
+  created() {
+    window.addEventListener("resize", this.windowResizeHandler);
   }
 };
 </script>
+
+<style lang="sass" scoped></style>

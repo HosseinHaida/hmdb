@@ -122,6 +122,7 @@ module.exports = function(/* ctx */) {
         "QTabPanels",
         "QTabPanel",
         "QSpinnerDots",
+        "QSpinnerIos",
         "QParallax",
         "QInput",
         "QBtnToggle"

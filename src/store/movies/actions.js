@@ -111,6 +111,7 @@ export async function fetchMovieDetails({ commit, state }, payload) {
 }
 
 export async function searchApi({ commit, state }) {
+  commit("setSearchResultsFetching", true);
   return http
     .get(
       api.baseUrl +
@@ -124,52 +125,57 @@ export async function searchApi({ commit, state }) {
         state.searchResultsCurrentPage
     )
     .then(response => {
-      console.log(response.data.results);
-      if (response.data.results[0].known_for) {
-        commit(
-          "setSearchResults",
-          response.data.results.map(singlePerson => {
-            return {
-              id: singlePerson.id,
-              name: singlePerson.name,
-              known_for: singlePerson.known_for,
-              known_for_department: singlePerson.known_for_department,
-              profile_path: singlePerson.profile_path
-                ? api.moviePictursBaseUrl +
-                  singlePerson.profile_path +
-                  "?api_key=" +
-                  api.key
-                : ""
-            };
-          })
-        );
-      } else if (response.data.results[0].title) {
-        commit(
-          "setSearchResults",
-          response.data.results.map(singleMovie => {
-            return {
-              title: singleMovie.title,
-              id: singleMovie.id,
-              original_language: singleMovie.original_language,
-              original_title: singleMovie.original_title,
-              genre_ids: singleMovie.genre_ids,
-              overview: singleMovie.overview,
-              release_year: singleMovie.release_date
-                ? singleMovie.release_date.slice(0, 4)
-                : "N/A",
-              poster_path: singleMovie.poster_path
-                ? api.moviePictursLQBaseUrl +
-                  singleMovie.poster_path +
-                  "?api_key=" +
-                  api.key
-                : "",
-              vote_average: singleMovie.vote_average
-            };
-          })
-        );
+      if (response.data.results[0]) {
+        commit("setNoSearchResults", false);
+        if (response.data.results[0].known_for) {
+          commit(
+            "setSearchResults",
+            response.data.results.map(singlePerson => {
+              return {
+                id: singlePerson.id,
+                name: singlePerson.name,
+                known_for: singlePerson.known_for,
+                known_for_department: singlePerson.known_for_department,
+                profile_path: singlePerson.profile_path
+                  ? api.moviePictursBaseUrl +
+                    singlePerson.profile_path +
+                    "?api_key=" +
+                    api.key
+                  : ""
+              };
+            })
+          );
+        } else if (response.data.results[0].title) {
+          commit(
+            "setSearchResults",
+            response.data.results.map(singleMovie => {
+              return {
+                title: singleMovie.title,
+                id: singleMovie.id,
+                original_language: singleMovie.original_language,
+                original_title: singleMovie.original_title,
+                genre_ids: singleMovie.genre_ids,
+                overview: singleMovie.overview,
+                release_year: singleMovie.release_date
+                  ? singleMovie.release_date.slice(0, 4)
+                  : "N/A",
+                poster_path: singleMovie.poster_path
+                  ? api.moviePictursLQBaseUrl +
+                    singleMovie.poster_path +
+                    "?api_key=" +
+                    api.key
+                  : "",
+                vote_average: singleMovie.vote_average
+              };
+            })
+          );
+        }
+        commit("setSearchResultsCurrentPage", response.data.page);
+        commit("setSearchResultsTotalPages", response.data.total_pages);
+      } else {
+        commit("setNoSearchResults", true);
+        commit("setSearchResults", {});
       }
-      commit("setSearchResultsCurrentPage", response.data.page);
-      commit("setSearchResultsTotalPages", response.data.total_pages);
     });
 }
 

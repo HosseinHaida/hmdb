@@ -268,16 +268,7 @@ export default {
   position: fixed;
   background-color: black;
   opacity: 0.8;
-.note
-  margin: 8px 0
-  padding: 8px 12px
-  font-size: 1em
-  border-color: #9e9e9e
-  border-style: solid
-  border-width: 0 0 0 5px
-  border-color: red;
-  letter-spacing: .5px
-.note--red
-  background-color: #fdedf2
-  border-color: #ec407a
+@media only screen and (max-width: 450px)
+  .infor-card
+    max-width: 100%
 </style>

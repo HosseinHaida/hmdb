@@ -67,18 +67,13 @@ export function setCastAndCrew(state, { actors, writers, directors }) {
     state.movieActors = actors.split(", ");
   }
   if (writers) {
-    if (writers.includes(",")) {
-      state.movieWriters = writers.split(", ");
-    } else {
-      state.movieWriters.push(writers);
+    let writersArray = writers.split(", ");
+    for (let i = 0; i < writersArray.length; i++) {
+      state.movieWriters[i] = writersArray[i].replace(/ *\([^)]*\) */g, "");
     }
   }
   if (directors) {
-    if (directors.includes(",")) {
-      state.movieDirectors = directors.split(", ");
-    } else {
-      state.movieDirectors.push(directors);
-    }
+    state.movieDirectors = directors.split(", ");
   }
 }
 
@@ -116,7 +111,7 @@ export function resetMoviesTab(state, payload) {
 // }
 
 export function setSearchText(state, payload) {
-  state.searchText = payload.replace(/ *\([^)]*\) */g, "");
+  state.searchText = payload;
 }
 
 export function setSearchType(state, payload) {
@@ -124,7 +119,16 @@ export function setSearchType(state, payload) {
 }
 
 export function setSearchResults(state, payload) {
+  state.searchResultsFetching = false;
   state.searchResults = payload;
+}
+
+export function setNoSearchResults(state, payload) {
+  state.noSearchResults = payload;
+}
+
+export function setSearchResultsFetching(state, payload) {
+  state.searchResultsFetching = payload;
 }
 
 export function setSearchResultsCurrentPage(state, payload) {

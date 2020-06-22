@@ -33,7 +33,6 @@ export function resetMovie(state) {
   state.movieActors = [];
   state.movieWriters = [];
   state.movieDirectors = [];
-  state.similarMovies = {};
   state.movieAwards = "";
 }
 
@@ -96,18 +95,6 @@ export function setMoviesTabInitially(state) {
 export function resetMoviesTab(state, payload) {
   state.previousMoviesTab = payload;
   state.moviesTab = "";
-}
-
-export function setSimilarMovies(state, payload) {
-  state.similarMovies = payload;
-}
-
-export function setSimilarMoviesCurrentPage(state, payload) {
-  state.setSimilarMoviesCurrentPage = payload;
-}
-
-export function setSimilarMoviesTotalPages(state, payload) {
-  state.setSimilarMoviesTotalPages = payload;
 }
 
 export function setSearchText(state, payload) {

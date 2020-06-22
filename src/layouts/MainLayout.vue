@@ -3,14 +3,15 @@
     <q-header elevated class="bg-primary text-white" height-hint="98">
       <q-toolbar>
         <q-toolbar-title>
-          <q-avatar
-            square
-            :style="
-              moviesTab ? { margin: '15px 0 5px 0' } : { margin: '15px 0' }
-            "
-          >
-            <img src="/statics/icons/favicon-128x128.png" />
-          </q-avatar>
+          <router-link to="./">
+            <q-avatar
+              square
+              :style="
+                moviesTab ? { margin: '15px 0 5px 0' } : { margin: '15px 0' }
+              "
+            >
+              <img src="/statics/icons/favicon-128x128.png" /> </q-avatar
+          ></router-link>
         </q-toolbar-title>
 
         <q-btn

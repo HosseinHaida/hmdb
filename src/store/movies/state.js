@@ -22,8 +22,5 @@ export default function() {
     searchResults: {},
     searchResultsCurrentPage: 1,
     searchResultsTotalPages: 0
-    // similarMovies: {},
-    // similarMoviesCurrentPage: 1,
-    // similarMovieSTotalPages: 0
   };
 }

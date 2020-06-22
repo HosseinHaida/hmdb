@@ -98,17 +98,17 @@ export function resetMoviesTab(state, payload) {
   state.moviesTab = "";
 }
 
-// export function setSimilarMovies(state, payload) {
-//   state.similarMovies = payload;
-// }
+export function setSimilarMovies(state, payload) {
+  state.similarMovies = payload;
+}
 
-// export function setSimilarMoviesCurrentPage(state, payload) {
-//   state.setSimilarMoviesCurrentPage = payload;
-// }
+export function setSimilarMoviesCurrentPage(state, payload) {
+  state.setSimilarMoviesCurrentPage = payload;
+}
 
-// export function setSimilarMoviesTotalPages(state, payload) {
-//   state.setSimilarMoviesTotalPages = payload;
-// }
+export function setSimilarMoviesTotalPages(state, payload) {
+  state.setSimilarMoviesTotalPages = payload;
+}
 
 export function setSearchText(state, payload) {
   state.searchText = payload;
@@ -142,8 +142,3 @@ export function setSearchResultsTotalPages(state, payload) {
 export function setDrawerStatus(state, payload) {
   state.drawerCollapseStatus = payload;
 }
-
-// export function failedToRetrieveImdbMeta(state) {
-//   state.imdb_rating = "!";
-//   state.imdb_rating_count = "!";
-// }

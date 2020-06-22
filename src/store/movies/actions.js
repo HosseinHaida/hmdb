@@ -71,42 +71,45 @@ export async function fetchMovieDetails({ commit, state }, payload) {
             directors: response.data.Director
           });
           commit("setAwards", { awards: response.data.Awards });
-          // http
-          //   .get(
-          //     api.baseUrl +
-          //       api.moviesBaseUrl +
-          //       "/" +
-          //       Number(payload) +
-          //       "/similar?api_key=" +
-          //       api.key +
-          //       "&page=" +
-          //       state.similarMoviesCurrentPage
-          //   )
-          // .then(response => {
-          //   commit("setSimilarMoviesCurrentPage", response.data.page);
-          //   commit("setSimilarMoviesTotalPages", response.data.total_pages);
-          //   commit(
-          //     "setSimilarMovies",
-          //     response.data.results.map(singleMovie => {
-          //       return {
-          //         title: singleMovie.title,
-          //         id: singleMovie.id,
-          //         original_language: singleMovie.original_language,
-          //         original_title: singleMovie.original_title,
-          //         genre_ids: singleMovie.genre_ids,
-          //         overview: singleMovie.overview,
-          //         release_date: singleMovie.release_date,
-          //         poster_path:
-          //           api.moviePictursLQBaseUrl +
-          //           singleMovie.poster_path +
-          //           "?api_key=" +
-          //           api.key,
-          //         vote_average: singleMovie.vote_average
-          //       };
-          //     })
-          //   );
-          // });
         });
+    });
+}
+
+export async function fetchSimilarMovies({ commit, state }) {
+  return http
+    .get(
+      api.baseUrl +
+        api.moviesBaseUrl +
+        "/" +
+        Number(payload) +
+        "/similar?api_key=" +
+        api.key +
+        "&page=" +
+        state.similarMoviesCurrentPage
+    )
+    .then(response => {
+      commit("setSimilarMoviesCurrentPage", response.data.page);
+      commit("setSimilarMoviesTotalPages", response.data.total_pages);
+      commit(
+        "setSimilarMovies",
+        response.data.results.map(singleMovie => {
+          return {
+            title: singleMovie.title,
+            id: singleMovie.id,
+            original_language: singleMovie.original_language,
+            original_title: singleMovie.original_title,
+            genre_ids: singleMovie.genre_ids,
+            overview: singleMovie.overview,
+            release_date: singleMovie.release_date,
+            poster_path:
+              api.moviePictursLQBaseUrl +
+              singleMovie.poster_path +
+              "?api_key=" +
+              api.key,
+            vote_average: singleMovie.vote_average
+          };
+        })
+      );
     });
 }
 

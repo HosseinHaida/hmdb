@@ -186,20 +186,80 @@
             </div>
           </q-tab-panel>
           <q-tab-panel name="more">
-            {{ movieAwards }}
+            <div>{{ movieAwards }}</div>
+            <div class="q-pa-md doc-container">
+              <div class="row">
+                <div class="col self-start">
+                  .self-start
+                </div>
+                <div class="col self-center">
+                  .self-center
+                </div>
+                <div class="col self-end">
+                  .self-end
+                </div>
+              </div>
+            </div>
+            <q-btn
+              push
+              color="white"
+              text-color="primary"
+              label="See Similar"
+            />
           </q-tab-panel>
         </q-tab-panels>
       </q-card>
-    </div>
-  </div></template
->
+      <div v-if="showSimilarMovies">
+        <div class="q-pa-md row flex flex-center q-gutter-md">
+          <movie-list-item
+            v-for="movie in moviesList"
+            :key="movie.id"
+            :title="movie.title"
+            :id="movie.id"
+            :original_language="movie.original_language"
+            :original_title="movie.original_title"
+            :genre_ids="movie.genre_ids"
+            :overview="movie.overview"
+            :release_date="movie.release_date"
+            :poster_path="movie.poster_path"
+            :vote_average="movie.vote_average"
+          ></movie-list-item>
+        </div>
+        <div class="q-pa-lg row flex flex-center">
+          <q-pagination
+            v-model="currentPage"
+            :max="totalPages"
+            :max-pages="8"
+            :boundary-numbers="true"
+          >
+          </q-pagination>
+        </div>
+        <div class="q-pa-md row q-gutter-md items-start">
+          <q-page-scroller
+            style="visibility: hidden"
+            position="bottom-right"
+            :scroll-offset="150"
+            :offset="[18, 18]"
+          >
+            <q-btn
+              ref="page_scroller"
+              fab
+              icon="keyboard_arrow_up"
+              color="accent"
+            />
+          </q-page-scroller>
+        </div>
+      </div>
+    </div></div
+></template>
 
 <script>
 export default {
   name: "Movie",
   data() {
     return {
-      tab: "overview"
+      tab: "overview",
+      showSimilarMovies: false
     };
   },
   watch: {

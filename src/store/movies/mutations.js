@@ -129,3 +129,7 @@ export function setSearchResultsTotalPages(state, payload) {
 export function setDrawerStatus(state, payload) {
   state.drawerCollapseStatus = payload;
 }
+
+export function setQueriedPerson(state, payload) {
+  state.queriedPerson = payload;
+}

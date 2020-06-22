@@ -187,19 +187,6 @@
           </q-tab-panel>
           <q-tab-panel name="more">
             <div>{{ movieAwards }}</div>
-            <div class="q-pa-md doc-container">
-              <div class="row">
-                <div class="col self-start">
-                  .self-start
-                </div>
-                <div class="col self-center">
-                  .self-center
-                </div>
-                <div class="col self-end">
-                  .self-end
-                </div>
-              </div>
-            </div>
           </q-tab-panel>
         </q-tab-panels>
       </q-card>

@@ -144,6 +144,32 @@ export async function searchApi({ commit, state }) {
     });
 }
 
+export async function findPerson({ commit, state }, payload) {
+  return http
+    .get(
+      api.baseUrl + api.personBaseUrl + "/" + payload + "?api_key=" + api.key
+    )
+    .then(response => {
+      commit("setQueriedPerson", {
+        name: response.data.name,
+        id: response.data.id,
+        biography: response.data.biography,
+        deathday: response.data.deathday,
+        birthday: response.data.birthday,
+        homepage: response.data.homepage,
+        also_known_as: response.data.also_known_as,
+        place_of_birth: response.data.place_of_birth,
+
+        profile_path: response.data.profile_path
+          ? api.moviePictursBaseUrl +
+            response.data.profile_path +
+            "?api_key=" +
+            api.key
+          : ""
+      });
+    });
+}
+
 export async function fetchGenres({ commit, state }) {
   return http
     .get(api.baseUrl + api.genreListUrl + "?api_key=" + api.key)

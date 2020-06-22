@@ -160,8 +160,115 @@
                   :label="result.original_language"
                 />
               </q-item-label>
+              <q-item-label v-if="result.known_for"
+                ><q-btn
+                  text-color="dark"
+                  flat
+                  dense
+                  icon="subject"
+                  @click="findPerson(result.id)"
+              /></q-item-label>
             </q-item-section>
           </q-item>
+          <q-dialog v-model="showPerson"
+            ><q-card style="min-width: 300px">
+              <q-img
+                contain
+                :src="
+                  queriedPerson.profile_path
+                    ? queriedPerson.profile_path
+                    : 'statics/placeholder_img.jpg'
+                "
+              />
+              <div
+                class="text-h5 absolute-top text-center"
+                style="background-color: #ffffff7f; padding: 15px 0"
+              >
+                <div>{{ queriedPerson.name }}</div>
+              </div>
+              <q-card-section>
+                <div
+                  class="text-overline text-orange-9"
+                  style="font-size: 15px"
+                >
+                  <div class="text-h6">
+                    <q-chip
+                      square
+                      label="Birthday"
+                      text-color="white"
+                      color="accent"
+                    />
+                    <q-chip
+                      ><q-avatar
+                        color="accent"
+                        text-color="white"
+                        icon="cake"
+                      />
+                      {{ queriedPerson.birthday | date }}</q-chip
+                    ><q-chip
+                      v-if="queriedPerson.birthday"
+                      :label="
+                        calcAge(
+                          queriedPerson.birthday,
+                          queriedPerson.deathday
+                        ) + ' Years'
+                      "
+                      color="warning"
+                    />
+                  </div>
+                  <div class="text-h6" v-if="queriedPerson.deathday">
+                    <q-chip
+                      square
+                      label="Deathday"
+                      text-color="white"
+                      color="dark"
+                    />
+                    <q-chip
+                      ><q-avatar
+                        color="dark"
+                        text-color="white"
+                        icon="brightness_3"
+                      />
+                      {{ queriedPerson.deathday | date }}</q-chip
+                    >
+                  </div>
+                </div>
+                <div
+                  class="text-caption text-justify q-py-lg"
+                  style="font-size: 13px"
+                >
+                  {{ queriedPerson.biography }}
+                </div>
+                <div class="q-ma-md" align="center">
+                  <a
+                    style="text-decoration: none"
+                    v-if="queriedPerson.homepage"
+                    :href="queriedPerson.homepage"
+                    ><q-btn icon="home" color="primary" label="Homepage"
+                  /></a>
+                </div>
+                <div v-if="queriedPerson.also_known_as">
+                  <div v-if="queriedPerson.also_known_as.length > 0">
+                    <div class="text-h6 q-pt-md q-pl-sm">
+                      Also known as:
+                    </div>
+                    <div class="q-pt-md">
+                      <q-chip
+                        v-for="(nickname, index) in queriedPerson.also_known_as"
+                        :key="index + 'nickname'"
+                        square
+                        :label="nickname"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </q-card-section>
+
+              <q-card-actions align="right">
+                <q-btn dense icon="close" color="accent" v-close-popup />
+              </q-card-actions>
+            </q-card>
+          </q-dialog>
         </q-list>
       </div>
     </q-drawer>
@@ -177,8 +284,35 @@ export default {
   data() {
     return {
       tab: "top_rated",
+      showPerson: false,
       drawerWidth: window.innerWidth < 500 ? 320 : 420
     };
+  },
+  filters: {
+    date: function(value) {
+      if (!value) return "";
+      const year = value.slice(0, 4);
+      const months = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "June",
+        "July",
+        "Aug",
+        "Sept",
+        "Oct",
+        "Nov",
+        "Dec"
+      ];
+      let monthNumber = value.slice(5, 7);
+      if (monthNumber.slice(0, 1) === "0") {
+        monthNumber = monthNumber.slice(1, 2);
+      }
+      const month = months[Number(monthNumber) - 1];
+      return year + " " + month + " " + value.slice(8, 10);
+    }
   },
   computed: {
     drawerCollapseStatus: {
@@ -219,6 +353,9 @@ export default {
     },
     noSearchResults() {
       return this.$store.state.movies.noSearchResults;
+    },
+    queriedPerson() {
+      return this.$store.state.movies.queriedPerson;
     }
   },
   methods: {
@@ -235,13 +372,27 @@ export default {
     },
     windowResizeHandler(e) {
       this.drawerWidth = window.innerWidth < 500 ? 320 : 420;
-      console.log(this.drawerWidth);
     },
     search(movie) {
       this.$store.commit("movies/setDrawerStatus", true);
       this.$store.commit("movies/setSearchText", movie);
       this.$store.commit("movies/setSearchType", "movie");
       this.$store.dispatch("movies/searchApi");
+    },
+    async findPerson(id) {
+      await this.$store.dispatch("movies/findPerson", id);
+      this.showPerson = true;
+    },
+    calcAge(bd, dd) {
+      const bdy = bd.slice(0, 4);
+      let ddy;
+      if (dd) {
+        ddy = dd.slice(0, 4);
+        return ddy - bdy;
+      } else {
+        const currentYear = new Date(Date.now()).getFullYear();
+        return currentYear - bdy;
+      }
     }
   },
   watch: {

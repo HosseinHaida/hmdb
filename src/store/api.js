@@ -7,7 +7,8 @@ export default {
   omdbKey: "1365db7",
   baseUrl: "https://api.themoviedb.org/3",
   moviesBaseUrl: "/movie",
+  personBaseUrl: "/person",
+  genreListUrl: "/genre/movie/list",
   moviePictursBaseUrl: "https://image.tmdb.org/t/p/original",
-  moviePictursLQBaseUrl: "https://image.tmdb.org/t/p/w500",
-  genreListUrl: "/genre/movie/list"
+  moviePictursLQBaseUrl: "https://image.tmdb.org/t/p/w500"
 };

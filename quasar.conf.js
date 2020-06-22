@@ -125,10 +125,11 @@ module.exports = function(/* ctx */) {
         "QSpinnerIos",
         "QParallax",
         "QInput",
-        "QBtnToggle"
+        "QBtnToggle",
+        "QDialog"
       ],
 
-      directives: ["Ripple"],
+      directives: ["Ripple", "ClosePopup"],
 
       // Quasar plugins
       plugins: []

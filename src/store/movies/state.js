@@ -22,6 +22,7 @@ export default function() {
     searchResults: {},
     searchResultsCurrentPage: 1,
     searchResultsTotalPages: 0,
-    queriedPerson: {}
+    queriedPerson: {},
+    fetchingPerson: false
   };
 }

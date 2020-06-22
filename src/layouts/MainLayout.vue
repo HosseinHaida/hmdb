@@ -58,7 +58,11 @@
           </template>
           <template v-slot:after>
             <!-- <q-btn round dense flat icon="send" @click="doTheSearch()" /> -->
-            <q-spinner-ios v-if="searchResultsFetching" color="primary" />
+            <q-spinner-ios
+              class="absolute-center"
+              v-if="searchResultsFetching"
+              color="primary"
+            />
           </template>
         </q-input>
         <div class="q-ma-sm text-center">
@@ -172,101 +176,107 @@
           </q-item>
           <q-dialog v-model="showPerson"
             ><q-card style="min-width: 300px">
-              <q-img
-                contain
-                :src="
-                  queriedPerson.profile_path
-                    ? queriedPerson.profile_path
-                    : 'statics/placeholder_img.jpg'
-                "
-              />
-              <div
-                class="text-h5 absolute-top text-center"
-                style="background-color: #ffffff7f; padding: 15px 0"
-              >
-                <div>{{ queriedPerson.name }}</div>
+              <div v-if="fetchingPerson">
+                <q-spinner-ios color="primary" />
               </div>
-              <q-card-section>
+              <div v-else>
+                <q-img
+                  contain
+                  :src="
+                    queriedPerson.profile_path
+                      ? queriedPerson.profile_path
+                      : 'statics/placeholder_img.jpg'
+                  "
+                />
                 <div
-                  class="text-overline text-orange-9"
-                  style="font-size: 15px"
+                  class="text-h5 absolute-top text-center"
+                  style="background-color: #ffffff7f; padding: 15px 0"
                 >
-                  <div class="text-h6">
-                    <q-chip
-                      square
-                      label="Birthday"
-                      text-color="white"
-                      color="accent"
-                    />
-                    <q-chip
-                      ><q-avatar
-                        color="accent"
-                        text-color="white"
-                        icon="cake"
-                      />
-                      {{ queriedPerson.birthday | date }}</q-chip
-                    ><q-chip
-                      v-if="queriedPerson.birthday"
-                      :label="
-                        calcAge(
-                          queriedPerson.birthday,
-                          queriedPerson.deathday
-                        ) + ' Years'
-                      "
-                      color="warning"
-                    />
-                  </div>
-                  <div class="text-h6" v-if="queriedPerson.deathday">
-                    <q-chip
-                      square
-                      label="Deathday"
-                      text-color="white"
-                      color="dark"
-                    />
-                    <q-chip
-                      ><q-avatar
-                        color="dark"
-                        text-color="white"
-                        icon="brightness_3"
-                      />
-                      {{ queriedPerson.deathday | date }}</q-chip
-                    >
-                  </div>
+                  <div>{{ queriedPerson.name }}</div>
                 </div>
-                <div
-                  class="text-caption text-justify q-py-lg"
-                  style="font-size: 13px"
-                >
-                  {{ queriedPerson.biography }}
-                </div>
-                <div class="q-ma-md" align="center">
-                  <a
-                    style="text-decoration: none"
-                    v-if="queriedPerson.homepage"
-                    :href="queriedPerson.homepage"
-                    ><q-btn icon="home" color="primary" label="Homepage"
-                  /></a>
-                </div>
-                <div v-if="queriedPerson.also_known_as">
-                  <div v-if="queriedPerson.also_known_as.length > 0">
-                    <div class="text-h6 q-pt-md q-pl-sm">
-                      Also known as:
-                    </div>
-                    <div class="q-pt-md">
+                <q-card-section>
+                  <div
+                    class="text-overline text-orange-9"
+                    style="font-size: 15px"
+                  >
+                    <div class="text-h6">
                       <q-chip
-                        v-for="(nickname, index) in queriedPerson.also_known_as"
-                        :key="index + 'nickname'"
                         square
-                        :label="nickname"
+                        label="Birthday"
+                        text-color="white"
+                        color="accent"
+                      />
+                      <q-chip
+                        ><q-avatar
+                          color="accent"
+                          text-color="white"
+                          icon="cake"
+                        />
+                        {{ queriedPerson.birthday | date }}</q-chip
+                      ><q-chip
+                        v-if="queriedPerson.birthday"
+                        :label="
+                          calcAge(
+                            queriedPerson.birthday,
+                            queriedPerson.deathday
+                          ) + ' Years'
+                        "
+                        color="warning"
                       />
                     </div>
+                    <div class="text-h6" v-if="queriedPerson.deathday">
+                      <q-chip
+                        square
+                        label="Deathday"
+                        text-color="white"
+                        color="dark"
+                      />
+                      <q-chip
+                        ><q-avatar
+                          color="dark"
+                          text-color="white"
+                          icon="brightness_3"
+                        />
+                        {{ queriedPerson.deathday | date }}</q-chip
+                      >
+                    </div>
                   </div>
-                </div>
-              </q-card-section>
+                  <div
+                    class="text-caption text-justify q-py-lg"
+                    style="font-size: 13px"
+                  >
+                    {{ queriedPerson.biography }}
+                  </div>
+                  <div class="q-ma-md" align="center">
+                    <a
+                      style="text-decoration: none"
+                      v-if="queriedPerson.homepage"
+                      :href="queriedPerson.homepage"
+                      ><q-btn icon="home" color="primary" label="Homepage"
+                    /></a>
+                  </div>
+                  <div v-if="queriedPerson.also_known_as">
+                    <div v-if="queriedPerson.also_known_as.length > 0">
+                      <div class="text-h6 q-pt-md q-pl-sm">
+                        Also known as:
+                      </div>
+                      <div class="q-pt-md">
+                        <q-chip
+                          v-for="(nickname,
+                          index) in queriedPerson.also_known_as"
+                          :key="index + 'nickname'"
+                          square
+                          :label="nickname"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </q-card-section>
 
-              <q-card-actions align="right">
-                <q-btn dense icon="close" color="accent" v-close-popup />
-              </q-card-actions>
+                <q-card-actions align="right">
+                  <q-btn dense icon="close" color="accent" v-close-popup />
+                </q-card-actions>
+              </div>
             </q-card>
           </q-dialog>
         </q-list>
@@ -322,6 +332,9 @@ export default {
       set: function(val) {
         this.$store.commit("movies/setDrawerStatus", val);
       }
+    },
+    fetchingPerson() {
+      return this.$store.state.movies.fetchingPerson;
     },
     searchText: {
       get: function() {
@@ -379,9 +392,9 @@ export default {
       this.$store.commit("movies/setSearchType", "movie");
       this.$store.dispatch("movies/searchApi");
     },
-    async findPerson(id) {
-      await this.$store.dispatch("movies/findPerson", id);
+    findPerson(id) {
       this.showPerson = true;
+      this.$store.dispatch("movies/findPerson", id);
     },
     calcAge(bd, dd) {
       const bdy = bd.slice(0, 4);

@@ -149,6 +149,7 @@
                   square
                   dense
                   color="warning"
+                  v-if="result.release_year || result.known_for_department"
                   :label="
                     result.release_year
                       ? result.release_year
@@ -199,7 +200,7 @@
                     class="text-overline text-orange-9"
                     style="font-size: 15px"
                   >
-                    <div class="text-h6">
+                    <div class="text-h6" v-if="queriedPerson.birthday">
                       <q-chip
                         square
                         label="Birthday"
